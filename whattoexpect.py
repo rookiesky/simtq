@@ -156,4 +156,8 @@ def main():
     totalPage()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+        request.logger.info('whattoexpect Success all')
+    except:
+        pass

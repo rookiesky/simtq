@@ -89,6 +89,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        pass
 
 #return {'post_title': title, 'post_excerpt': excerpt, 'tag': tages, 'post_content': content, 'post_author': author, 'post_date': create_time, 'post_category': 2}

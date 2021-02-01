@@ -6,7 +6,7 @@ import json
 request = Request()
 list_url = []
 
-url = 'https://www.healthline.com/directory/topics?page='
+url = 'https://www.healthline.com/directory/topics?page=1'
 post_api = 'https://www.simtq.com/wordpress_post_api.php?action=save'
 
 def articleList(url):
@@ -83,16 +83,15 @@ def article():
 
 def main():
     global list_url, url
-    for i in range(115,0,-1):
-        url = url + str(i)
-        articleList(url)
-        if len(list_url) <= 0:
-            request.logger.error('list url empty')
-            continue
-        article()
-        request.logger.info('success,page:{},sleep 5s'.format(i))
-        time.sleep(5)
+    articleList(url)
+    if len(list_url) <= 0:
+        request.logger.error('list url empty')
+        return False
+    article()
 
 if __name__ == "__main__":
-    main()
-    request.logger.info('Success All')
+    try:
+        main()
+        request.logger.info('healthline Success All')
+    except:
+        pass
