@@ -103,7 +103,8 @@ def article():
             data = articleFormat(soup)
             data['replys'] = commnets(soup)
             data['post_category'] = cate
-
+            print(data)
+            exit()
             request.requestPostJson(api=post_api,json=data)
             request.logger.info('Success,title:{}'.format(data['post_title']))
         except Exception as e:
@@ -113,6 +114,7 @@ def article():
             soup = ''
             data = ''
             response = ''
+        exit()
     list_url = []
 
 def totalPage():
