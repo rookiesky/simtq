@@ -127,8 +127,8 @@ def catePage(url):
 
         article()
         temp_page = temp_page + 1
-        request.logger.info('reptile cate:{},Success! sleep 5s'.format(cate))
-        time.sleep(5)
+        request.logger.info('reptile cate:{},Success! sleep 3s'.format(cate))
+        time.sleep(3)
 
 def totalPage():
     global cate_liks, cate, iswhile,list_url
