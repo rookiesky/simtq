@@ -103,8 +103,6 @@ def article():
             data = articleFormat(soup)
             data['replys'] = commnets(soup)
             data['post_category'] = cate
-            print(data)
-            exit()
             request.requestPostJson(api=post_api,json=data)
             request.logger.info('Success,title:{}'.format(data['post_title']))
         except Exception as e:
@@ -114,8 +112,23 @@ def article():
             soup = ''
             data = ''
             response = ''
-        exit()
     list_url = []
+
+def catePage(url):
+    global list_url, iswhile, temp_page
+    while iswhile:
+        if temp_page_total != 0 and temp_page >= temp_page_total:
+            iswhile = False
+        
+        articleList(url + '?page={}'.format(temp_page))
+        if len(list_url) <= 0:
+            request.logger.error('list link empty')
+            continue
+
+        article()
+        temp_page = temp_page + 1
+        request.logger.info('reptile cate:{},Success! sleep 5s'.format(cate))
+        time.sleep(5)
 
 def totalPage():
     global cate_liks, cate, iswhile,list_url
@@ -124,19 +137,11 @@ def totalPage():
         for url in item['links']:
             if 'https:' not in url:
                 url = 'https:' + url
+            
+            catePage(url)
 
-            articleList(url)
-            if len(list_url) <= 0:
-                request.logger.error('list link empty')
-                continue
-
-            article()
-            request.logger.info('reptile cate:{},Success! sleep 5s'.format(cate))
-            time.sleep(5)
             
             
-
-
 def cateList():
     global url, cate_liks
     response = request.request(url=url)
