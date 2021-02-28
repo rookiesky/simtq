@@ -4,8 +4,8 @@
 name: Python application
 
 on:
-  # schedule:
-  #   - cron: '* */12 * * *'
+  schedule:
+    - cron: '* */12 * * *'
   push:
     branches: [ main ]
 
@@ -29,5 +29,5 @@ jobs:
       run: |
         python whattoexpect_all.py
         # python whattoexpect.py
-        # python childrens.py
-        # python healthline.py
+        python childrens.py
+        python healthline.py

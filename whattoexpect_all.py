@@ -1,9 +1,9 @@
-from Request import Request
+from HttpPorxy import HttpPorxy
 from bs4 import BeautifulSoup
 import time
 import json
 
-request = Request()
+request = HttpPorxy()
 list_url = []
 cate = ''
 cate_liks = []
@@ -19,14 +19,14 @@ iswhile = True
 def articleList(url):
     global request, list_url, temp_page_total
 
-    response = request.request(url=url)
+    response = request.get(url=url)
     if response == False:
         return False
 
     soup = BeautifulSoup(response,'html.parser')
-    if temp_page_total <= 0:
-        number = soup.find_all('a',attrs={'class','page-link'})
-        temp_page_total = int(number[-2].text)
+    # if temp_page_total <= 0:
+    #     number = soup.find_all('a',attrs={'class','page-link'})
+    #     temp_page_total = int(number[-2].text)
         
     urls = soup.find_all('a',attrs={'class',"linkDiscussion"})
     list_url = [host + item.get('href') for item in urls]
@@ -93,7 +93,7 @@ def commnets(soup):
 def article():
     global request, post_api, list_url, cate
     for url in list_url:
-        response = request.request(url)
+        response = request.get(url)
         if response == False:
             continue
 
@@ -103,7 +103,7 @@ def article():
             data = articleFormat(soup)
             data['replys'] = commnets(soup)
             data['post_category'] = cate
-            request.requestPostJson(api=post_api,json=data)
+            request.postJson(url=post_api,json=data)
             request.logger.info('Success,title:{}'.format(data['post_title']))
         except Exception as e:
             request.logger.error('article form error,msg:{}'.format(e))
@@ -130,6 +130,16 @@ def catePage(url):
         request.logger.info('reptile cate:{},Success! sleep 3s'.format(cate))
         time.sleep(3)
 
+def newCatePage(url):
+    global list_url
+    articleList(url)
+    if len(list_url) <= 0:
+        request.logger.error('list link empty')
+        return False
+    article()
+    request.logger.info('reptile cate:{},Success! sleep 3s'.format(cate))
+    time.sleep(3)
+
 def totalPage():
     global cate_liks, cate, iswhile,list_url
     for item in cate_liks:
@@ -138,13 +148,13 @@ def totalPage():
             if 'https:' not in url:
                 url = 'https:' + url
             
-            catePage(url)
+            newCatePage(url)
 
             
             
 def cateList():
     global url, cate_liks
-    response = request.request(url=url)
+    response = request.get(url=url)
     if response == False:
         exit()
 
@@ -159,6 +169,7 @@ def cateList():
         cate_liks.append({'cate': cate, 'links': urls})
 
 def main():
+    global cate_liks
     cateList()
     totalPage()
 
